@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="GBK"?>
+<!-- 指定校验配置文件的DTD信息 -->
+<!DOCTYPE validators PUBLIC 
+	"-//Apache Struts//XWork Validator 1.0.3//EN"
+	"http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
+<validators>
+	<field name="user.username">
+		<field-validator type="requiredstring" short-circuit="true">
+			<param name="trim">true</param>
+			<message key="username.required" />
+		</field-validator>
+	</field>
+	<field name="user.password">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="password.required" />
+		</field-validator>
+		<field-validator type="regex">
+			<param name="regex"><![CDATA[(\w{6,16})]]></param>
+			<message key="password.regex"></message>
+		</field-validator>
+	</field>
+	<field name="user.verifyCode">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="verifyCode.required" />
+		</field-validator>
+	</field>
+</validators>

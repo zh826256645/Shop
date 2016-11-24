@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<!-- 配置 PO Bean -->
+	<bean id="user" class="com.zhonghao.user.domain.User" scope="prototype" />
+	<bean id="category" class="com.zhonghao.category.domain.Category"
+		scope="ptototype" />
+	<bean id="categorySecond" class="com.zhonghao.categorysecond.domain.CategorySecond" scope="prototype"/>
+
+	<!-- 配置 Dao Bean -->
+	<bean id="userDao" class="com.zhonghao.user.dao.impl.UserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="categoryDao" class="com.zhonghao.category.dao.impl.CategoryDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="productDao" class="com.zhonghao.product.dao.impl.ProductDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="orderDao" class="com.zhonghao.order.dao.impl.OrderDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="adminUserDao" class="com.zhonghao.adminuser.dao.impl.AdminUserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="categorySecondDao" class="com.zhonghao.categorysecond.dao.impl.CategorySecondDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+</beans>

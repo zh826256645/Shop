@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 开启动态方法，不建议开启 -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<!-- 开发者模式 -->
+	<constant name="struts.devMode" value="true" />
+
+
+	<!-- 所有的Action定义都应该放在package下 -->
+	<!-- 不需要权限拦截的 Action -->
+	<package name="myDefault" namespace="/" extends="struts-default">
+		<!-- 自定义定义拦截器和拦截器栈 -->
+		<interceptors>
+			<interceptor name="init" class="init" />
+			<interceptor-stack name="default">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="init" />
+			</interceptor-stack>
+		</interceptors>
+
+		<!-- 设置默认拦截器 -->
+		<default-interceptor-ref name="default" />
+
+		<!-- 全局 Result -->
+		<global-results>
+			<result name="index">/WEB-INF/content/index.jsp</result>
+		</global-results>
+
+		<!-- 访问首页 -->
+		<action name="index" class="indexAction">
+			<result>/WEB-INF/content/index.jsp</result>
+		</action>
+		<!-- 生成验证码 -->
+		<action name="verifyCode" class="verifyCodeAction">
+		</action>
+
+		<!-- 访问商品详情页面 -->
+		<action name="productPage" class="productAction">
+			<result>/WEB-INF/content/product.jsp</result>
+		</action>
+		<!-- 访问一级分类分类商品页面 -->
+		<action name="productByCidPage" class="productAction" method="findByCid">
+			<result>/WEB-INF/content/allproduct.jsp</result>
+		</action>
+		<!-- 访问二级分类分类商品页面 -->
+		<action name="productByCsidPage" class="productAction" method="findByCsid">
+			<result>/WEB-INF/content/allproduct.jsp</result>
+		</action>
+
+		<!-- 访问购物车页面 -->
+		<action name="shopCarPage" class="shopCarAction">
+			<result>/WEB-INF/content/shopcar.jsp</result>
+		</action>
+		<!-- 添加购物车项目 -->
+		<action name="addShopCarItem" class="shopCarAction" method="addShopCarItem">
+			<result>/WEB-INF/content/shopcar.jsp</result>
+		</action>
+		<!-- 清空购物车 -->
+		<action name="clearShopCar" class="shopCarAction" method="clearShopCar">
+			<result>/WEB-INF/content/shopcar.jsp</result>
+		</action>
+		<!-- 删除商品 -->
+		<action name="removeShopCarItem" class="shopCarAction" method="removeShopCarItem">
+			<result>/WEB-INF/content/shopcar.jsp</result>
+		</action>
+
+		<!-- 后台用户登录 Action -->
+		<action name="adminuser_*" class="adminUserAction" method="{1}">
+			<result name="index">/WEB-INF/admin/index.jsp</result>
+			<result>/WEB-INF/admin/home.jsp</result>
+			<result name="input">/WEB-INF/admin/index.jsp</result>
+		</action>
+
+		<!-- 显示框架页面的 Action -->
+		<action name="page_*" class="pageAction" method="{1}">
+			<result name="top">/WEB-INF/admin/top.jsp</result>
+			<result name="left">/WEB-INF/admin/left.jsp</result>
+			<result name="right">/WEB-INF/admin/welcome.jsp</result>
+			<result name="down">/WEB-INF/admin/bottom.jsp</result>
+		</action>
+
+		<!-- 管理一级标签的 Action -->
+		<action name="admincategory_*" class="adminCategoryAction"
+			method="{1}">
+			<result name="all">/WEB-INF/admin/category/list.jsp</result>
+			<result name="add">/WEB-INF/admin/category/add.jsp</result>
+			<result name="succToAdd" type="redirectAction">
+				<param name="actionName">admincategory_findAllCategory</param>
+			</result>
+			<result name="succToDelete" type="redirectAction">
+				<param name="actionName">admincategory_findAllCategory</param>
+			</result>
+			<result name="edit">/WEB-INF/admin/category/edit.jsp</result>
+			<result name="succToUpdate" type="redirectAction">
+				<param name="actionName">admincategory_findAllCategory</param>
+			</result>
+		</action>
+
+		<!-- 管理二级表情的 Action -->
+		<action name="admincategorySecond_*" class="adminCategorySecondAction"
+			method="{1}">
+			<result name="all">/WEB-INF/admin/categorySecond/list.jsp</result>
+			<result name="add">/WEB-INF/admin/categorySecond/add.jsp</result>
+			<result name="succToAdd" type="redirectAction">
+				<param name="actionName">admincategorySecond_findAllCategorySecond</param>
+			</result>
+			<result name="update">/WEB-INF/admin/categorySecond/edit.jsp</result>
+			<result name="succToUpdate" type="redirectAction">
+				<param name="actionName">admincategorySecond_findAllCategorySecond</param>
+			</result>
+			<result name="succToDelete" type="redirectAction">
+				<param name="actionName">admincategorySecond_findAllCategorySecond</param>
+			</result>
+		</action>
+	</package>
+
+
+	<!-- 未登录的用户才能访问的 Action -->
+	<package name="beforeLgoin" namespace="/" extends="struts-default">
+		<interceptors>
+			<interceptor name="init" class="init" />
+			<interceptor name="beforeLogin" class="beforeLogin" />
+			<interceptor-stack name="before">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="beforeLogin">
+					<param name="excludeMethods">logout</param>
+				</interceptor-ref>
+				<interceptor-ref name="init" />
+			</interceptor-stack>
+		</interceptors>
+
+		<!-- 设置默认拦截器 -->
+		<default-interceptor-ref name="before" />
+
+		<!-- 全局 Result -->
+		<global-results>
+			<result name="index">/WEB-INF/content/index.jsp</result>
+		</global-results>
+
+		<!-- Action -->
+		<!-- 访问注册页面 -->
+		<action name="registerPage" class="registerAction">
+			<result>/WEB-INF/content/register.jsp</result>
+			<!-- 定义拦截器，没有登录的用户才能访问 -->
+			<interceptor-ref name="before" />
+		</action>
+		<!-- 用户注册 -->
+		<action name="register" class="registerAction" method="register">
+			<result>/WEB-INF/content/login.jsp</result>
+			<result name="input">/WEB-INF/content/register.jsp</result>
+		</action>
+		<!-- ajax 验证用户名是否重复 -->
+		<action name="verify" class="registerAction" method="verify">
+			<result type="stream">
+				<!-- 指定 stream 生成响应数据的类型 -->
+				<param name="contentType">text/html</param>
+				<!-- 指定由 getInputStream() 方法返回输出结果的 InputStream -->
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+		<action name="activate" class="registerAction" method="activate">
+			<result name="login">/WEB-INF/content/login.jsp</result>
+		</action>
+		<!-- 访问用户登录页面 -->
+		<action name="loginPage" class="loginAction">
+			<result>/WEB-INF/content/login.jsp</result>
+		</action>
+		<!-- 用户登录 -->
+		<action name="login" class="loginAction" method="login">
+			<result>/WEB-INF/content/index.jsp</result>
+			<result name="input">/WEB-INF/content/login.jsp</result>
+		</action>
+	</package>
+
+	<!-- 改包下的 Action 需要 登录才能访问 -->
+	<package name="afterLogin" namespace="/" extends="struts-default">
+		<!-- 定义拦截器 -->
+		<interceptors>
+			<interceptor name="init" class="init" />
+			<interceptor name="afterLogin" class="afterLogin" />
+			<interceptor-stack name="after">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="afterLogin" />
+				<interceptor-ref name="init" />
+			</interceptor-stack>
+		</interceptors>
+		<!-- 设置默认拦截器 -->
+		<default-interceptor-ref name="after" />
+
+		<!-- 全局 Result -->
+		<global-results>
+			<result name="index">/WEB-INF/content/index.jsp</result>
+		</global-results>
+
+		<!-- Action -->
+		<!-- 退出登录 -->
+		<action name="logout" class="loginAction" method="logout">
+			<result>/WEB-INF/content/index.jsp</result>
+		</action>
+
+		<!-- 访问订单页 -->
+		<action name="orderPage" class="orderAction" method="findByUid">
+			<result>/WEB-INF/content/orderlist.jsp</result>
+		</action>
+		<!-- 生成订单 -->
+		<action name="createOrder" class="orderAction" method="createOrder">
+			<result>/WEB-INF/content/order.jsp</result>
+		</action>
+		<!-- 删除订单 -->
+		<action name="removeOrder" class="orderAction" method="removeOrder">
+			<result type="redirectAction">
+				<param name="actionName">orderPage</param>
+				<param name="page">1</param>
+			</result>
+		</action>
+		<!-- 删除订单项 -->
+		<action name="removeOrderItem" class="orderAction" method="removeOrderItem">
+			<result type="redirectAction">
+				<param name="actionName">orderPage</param>
+				<param name="page">1</param>
+			</result>
+		</action>
+		<!-- 根据订单 ID 查询订单 -->
+		<action name="findByOid" class="orderAction" method="findByOid">
+			<result>/WEB-INF/content/order.jsp</result>
+			<result name="error" type="redirectAction">
+				<param name="actionName">orderPage</param>
+				<param name="page">1</param>
+			</result>
+		</action>
+		<action name="paymentForOid" class="orderAction" method="paymentForOid">
+			<result type="redirectAction">
+				<param name="actionName">orderPage</param>
+				<param name="page">1</param>
+			</result>
+		</action>
+	</package>
+</struts>
